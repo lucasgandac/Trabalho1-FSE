@@ -1,6 +1,5 @@
 import RPi.GPIO as gpio
 import time
-import board
 import adafruit_dht
 
 
@@ -89,16 +88,20 @@ class Sensores:
             else:
                 msg["ALARME"] = "DESLIGADA"
             if gpio.input(self.SFum):
-                msg["PROJ"] = "LIGADA"
+                msg["SFum"] = "LIGADA"
             else:
-                msg["PROJ"] = "DESLIGADA"
+                msg["SFum"] = "DESLIGADA"
             if gpio.input(self.SJan):
-                msg["PROJ"] = "LIGADA"
+                msg["SJan"] = "LIGADA"
             else:
-                msg["PROJ"] = "DESLIGADA"
+                msg["SJan"] = "DESLIGADA"
             if gpio.input(self.SPor):
-                msg["PROJ"] = "LIGADA"
+                msg["SPor"] = "LIGADA"
             else:
-                msg["PROJ"] = "DESLIGADA"
-    
+                msg["SPor"] = "DESLIGADA"
+            if gpio.input(self.SPres):
+                msg["SPres"] = "LIGADA"
+            else:
+                msg["SPres"] = "DESLIGADA" 
+            
             return msg

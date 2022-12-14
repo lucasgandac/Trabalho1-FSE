@@ -14,15 +14,17 @@ try:
     # Send data
     message = 'This is the message.  It will be repeated.'
     print ( 'sending "%s"' % message)
-    sock.sendall(message.encode('utf-8'))
+    #sock.sendall(message.encode('utf-8'))
 
     # Look for the response
     amount_received = 0
     amount_expected = len(message)
 
     read_sensor = Sensores("teste")
-    read_sensor.read_state()
+    msg = str(read_sensor.read_state())
+    print(msg.encode('utf-8'))
 
+    sock.sendall(msg.encode('utf-8'))
     while amount_received < amount_expected:
         data = sock.recv(1024)
         amount_received += len(data)
