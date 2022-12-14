@@ -21,6 +21,7 @@ try:
     amount_expected = len(message)
 
     read_sensor = Sensores("teste")
+    read_sensor.change_state("AR")
     msg = str(read_sensor.read_state())
     print(msg.encode('utf-8'))
 

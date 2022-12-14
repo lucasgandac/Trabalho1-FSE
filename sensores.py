@@ -1,10 +1,9 @@
 import RPi.GPIO as gpio
 import time
 import adafruit_dht
-
-
+    
+    
 class Sensores:
-  
     LUZ_1 = 18
     LUZ_2 = 23
     AR = 24
@@ -64,7 +63,6 @@ class Sensores:
             'SJan':'DESLIGADA',
             'SPor':'DESLIGADA'
         }
-        countP = 0
     
         for i in range(1):
             if gpio.input(self.LUZ_1):
@@ -105,3 +103,19 @@ class Sensores:
                 msg["SPres"] = "DESLIGADA" 
             
             return msg
+        
+        
+    def change_state(self, sensorName):
+        self.map_port()
+        dict = {
+            "LUZ_1": 18,
+            "LUZ_2": 23,
+            "AR" : 24
+        }
+        print("Valor sensor:", dict[sensorName])
+        porta = dict[sensorName]
+        print(dict)
+        if gpio.input(porta):
+            gpio.output(porta, 0)
+        else:
+            gpio.output(porta, 1)
