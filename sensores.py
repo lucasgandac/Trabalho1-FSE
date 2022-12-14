@@ -1,4 +1,7 @@
 import RPi.GPIO as gpio
+import time
+import board
+import adafruit_dht
 
 
 class Sensores:
@@ -34,15 +37,33 @@ class Sensores:
         gpio.setup(self.COUNT_IN, gpio.IN)
         gpio.setup(self.COUNT_OUT, gpio.IN)
         gpio.setup(self.DHT22, gpio.IN)
+        
 
+    def dht22(self):
+        self.map_port()
+        try:
+            temperature_c = dhtDevice.temperature
+            temperature_f = temperature_c * (9 / 5) + 32
+            humidity = dhtDevice.humidity
+            data = "Temperatura:  {:.1f} C    Umidade: {}% ".format(temperature_c, humidity)
+            return data
+        
+        except Exception as error:
+            dhtDevice.exit()
+            return "Nao foi possivel recolher temperatura e umidade"
+    
     def read_state(self):
         self.map_port()
         msg = {
             'LUZ_1': 'DESLIGADA',
-            'LUZ_1': 'DESLIGADA',
+            'LUZ_2': 'DESLIGADA',
             'AR': 'DESLIGADA',
             'PROJ': 'DESLIGADA',
-            'ALARME': 'DESLIGADA'
+            'ALARME': 'DESLIGADA',
+            'SPres': 'DESLIGADA',
+            'SFum':'DESLIGADA',
+            'SJan':'DESLIGADA',
+            'SPor':'DESLIGADA'
         }
         countP = 0
     
@@ -67,30 +88,17 @@ class Sensores:
                 msg["ALARME"] = "LIGADA"
             else:
                 msg["ALARME"] = "DESLIGADA"
-            if gpio.input(self.COUNT_IN):
-                countP = countP + 1
-            else:
-                pass
-            if gpio.input(self.COUNT_OUT):
-                print("Alguem saiu no predio")
-                if countP > 0 and countP != 0:
-                    countP = countP - 1
-            else:
-                pass
             if gpio.input(self.SFum):
-                print("Sensor de fumaça ligado")
+                msg["PROJ"] = "LIGADA"
             else:
-                print("Sensor de fumaça desligado")
+                msg["PROJ"] = "DESLIGADA"
             if gpio.input(self.SJan):
-                print("Janela aberta")
+                msg["PROJ"] = "LIGADA"
             else:
-                print("Janela fechada")
+                msg["PROJ"] = "DESLIGADA"
             if gpio.input(self.SPor):
-                print("Porta aberta")
+                msg["PROJ"] = "LIGADA"
             else:
-                print("Porta fechada")
+                msg["PROJ"] = "DESLIGADA"
     
             return msg
-            # print(f"Ha {countP} pessoas na sala")
-            # msg_to_send = json.dumps(msg).encode("ascii")
-            # sock.send(msg_to_send)
