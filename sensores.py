@@ -1,8 +1,8 @@
 import RPi.GPIO as gpio
 import time
 import adafruit_dht
-    
-    
+import board 
+
 class Sensores:
     
     sensores_list = {
@@ -41,17 +41,17 @@ class Sensores:
         
 
     def dht22(self):
-        self.map_port()
-        dhtDevice = adafruit_dht.DHT22(self.sensores_list['DHT22'], use_pulseio=False)
+        dhtDevice = adafruit_dht.DHT22(board.D4, use_pulseio=False)
         try:
+            time.sleep(0.2)
             temperature_c = dhtDevice.temperature
-            temperature_f = temperature_c * (9 / 5) + 32
             humidity = dhtDevice.humidity
-            data = "Temperatura:  {:.1f} C    Umidade: {}% ".format(temperature_c, humidity)
+            data = "Temp:  {:.1f} C    Umidade: {}% ".format(temperature_c, humidity)
             return data
         
         except Exception as error:
             dhtDevice.exit()
+            print(error)
             return "Nao foi possivel recolher temperatura e umidade"
     
     def read_state(self):
@@ -75,21 +75,17 @@ class Sensores:
                 msg[key] = "LIGADO"
             else:
                 msg[key] = "DESLIGADO"
-        self.dht22()
-        teste = "oi"
-        return msg, teste
+        dht = self.dht22()
+        print(dht)
+        msg['TEMP'] = dht
+        return msg
         
         
     def change_state(self, sensorName):
         self.map_port()
-        dict = {
-            "LUZ_1": 18,
-            "LUZ_2": 23,
-            "AR" : 24
-        }
-        print("Valor sensor:", dict[sensorName])
-        porta = dict[sensorName]
-        print(dict)
+        print("Valor sensor:", self.sensores_list[sensorName])
+        porta = self.sensores_list[sensorName]
+        print(porta)
         if gpio.input(porta):
             gpio.output(porta, 0)
         else:

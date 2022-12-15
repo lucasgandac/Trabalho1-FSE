@@ -3,6 +3,7 @@ import sys
 from sensores import Sensores
 import threading
 import time
+import json 
 
 # Create a TCP/IP socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -35,8 +36,8 @@ class DistributedServer:
 
                 read_sensor = Sensores()
                 #read_sensor.change_state("AR")
-                msg, teste = read_sensor.read_state()
-                msg = str(msg)
+                msg = read_sensor.read_state()
+                msg = json.dumps(msg)
                 print(msg)
                 print(msg.encode('utf-8'))
 
