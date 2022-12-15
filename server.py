@@ -2,6 +2,9 @@ from datetime import datetime
 import json
 import socket
 import threading
+import time
+from socket import error as SocketError
+import errno
 
 FORMAT = 'utf-8'
 ADDR = ('localhost', 10101)
@@ -12,16 +15,23 @@ class CentralServer:
         self.server.bind(ADDR) 
 
     def handle_client(self, connection, adress):
-        print(f'Conexão de {adress}')
-        while True:
-            data = connection.recv(1024)
-            print ('received "%s"' % data)
-            if data:
-                print ('sending data back to the client')
-                connection.sendall(data)
-            else:
-                print ('Sem mais conexão', adress)
-                break
+        try:
+            print(f'Conexão de {adress}')
+            while True:
+                data = connection.recv(1024)
+                #print ('received "%s"' % data)
+                if data:
+                    print ('sending data back to the client')
+                    connection.sendall(data)
+                else:
+                    print ('Sem mais conexão', adress)
+                    break
+                time.sleep(2)
+        except SocketError as e:
+            if e.errno != errno.ECONNRESET:
+                raise            
+            print("Distribuído disconectado")
+            pass
 
 
     def start(self):

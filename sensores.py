@@ -4,41 +4,45 @@ import adafruit_dht
     
     
 class Sensores:
-    LUZ_1 = 18
-    LUZ_2 = 23
-    AR = 24
-    PROJ = 25
-    ALARME = 8
-    SPres = 7
-    SFum = 1
-    SJan = 12
-    SPor = 16
-    COUNT_IN = 20
-    COUNT_OUT = 21
-    DHT22 = 4
+    
+    sensores_list = {
+        "LUZ_1": 18,
+        "LUZ_2": 23,
+        "AR" : 24,
+        "PROJ" : 25,
+        "ALARME" : 8,
+        "SPres" : 7,
+        "SFum" : 1,
+        "SJan" : 12,
+        "SPor" : 16,
+        "COUNT_IN" : 20,
+        "COUNT_OUT" : 21,
+        "DHT22" : 4
+    }
         
-    def __init__(self, config) -> None:
-        self.config = config
+    def __init__(self) -> None:
+        self.sensores_list = self.sensores_list
 
     def map_port(self):
         gpio.setmode(gpio.BCM)
         gpio.setwarnings(False)
-        gpio.setup(self.LUZ_1, gpio.OUT)
-        gpio.setup(self.LUZ_2, gpio.OUT)
-        gpio.setup(self.AR, gpio.OUT)
-        gpio.setup(self.PROJ, gpio.OUT)
-        gpio.setup(self.ALARME, gpio.OUT)
-        gpio.setup(self.SPres, gpio.IN)
-        gpio.setup(self.SFum, gpio.IN)
-        gpio.setup(self.SJan, gpio.IN)
-        gpio.setup(self.SPor, gpio.IN)
-        gpio.setup(self.COUNT_IN, gpio.IN)
-        gpio.setup(self.COUNT_OUT, gpio.IN)
-        gpio.setup(self.DHT22, gpio.IN)
+        gpio.setup(self.sensores_list['LUZ_1'], gpio.OUT)
+        gpio.setup(self.sensores_list['LUZ_2'], gpio.OUT)
+        gpio.setup(self.sensores_list['AR'], gpio.OUT)
+        gpio.setup(self.sensores_list['PROJ'], gpio.OUT)
+        gpio.setup(self.sensores_list['ALARME'], gpio.OUT)
+        gpio.setup(self.sensores_list['SPres'], gpio.IN)
+        gpio.setup(self.sensores_list['SFum'], gpio.IN)
+        gpio.setup(self.sensores_list['SJan'], gpio.IN)
+        gpio.setup(self.sensores_list['SPor'], gpio.IN)
+        gpio.setup(self.sensores_list['COUNT_IN'], gpio.IN)
+        gpio.setup(self.sensores_list['COUNT_OUT'], gpio.IN)
+        gpio.setup(self.sensores_list['DHT22'], gpio.IN)
         
 
     def dht22(self):
         self.map_port()
+        dhtDevice = adafruit_dht.DHT22(self.sensores_list['DHT22'], use_pulseio=False)
         try:
             temperature_c = dhtDevice.temperature
             temperature_f = temperature_c * (9 / 5) + 32
@@ -53,56 +57,27 @@ class Sensores:
     def read_state(self):
         self.map_port()
         msg = {
-            'LUZ_1': 'DESLIGADA',
-            'LUZ_2': 'DESLIGADA',
-            'AR': 'DESLIGADA',
-            'PROJ': 'DESLIGADA',
-            'ALARME': 'DESLIGADA',
-            'SPres': 'DESLIGADA',
-            'SFum':'DESLIGADA',
-            'SJan':'DESLIGADA',
-            'SPor':'DESLIGADA'
+            'LUZ_1': 'DESLIGADO',
+            'LUZ_2': 'DESLIGADO',
+            'AR': 'DESLIGADO',
+            'PROJ': 'DESLIGADO',
+            'ALARME': 'DESLIGADO',
+            'SPres': 'DESLIGADO',
+            'SFum':'DESLIGADO',
+            'SJan':'DESLIGADO',
+            'SPor':'DESLIGADO'
         }
     
-        for i in range(1):
-            if gpio.input(self.LUZ_1):
-                msg["LUZ_1"] = "LIGADA"
+        for key, value in self.sensores_list.items():
+            if (key == 'COUNT_IN' or key == 'COUNT_OUT' or key == 'DHT22'):
+                pass
+            elif gpio.input(value):
+                msg[key] = "LIGADO"
             else:
-                msg["LUZ_1"] = "DESLIGADA"
-            if gpio.input(self.LUZ_2):
-                msg["LUZ_2"] = "LIGADA"
-            else:
-                msg["LUZ_2"] = "DESLIGADA"
-            if gpio.input(self.AR):
-                msg["AR"] = "LIGADA"
-            else:
-                msg["AR"] = "DESLIGADA"
-            if gpio.input(self.PROJ):
-                msg["PROJ"] = "LIGADA"
-            else:
-                msg["PROJ"] = "DESLIGADA"
-            if gpio.input(self.ALARME):
-                msg["ALARME"] = "LIGADA"
-            else:
-                msg["ALARME"] = "DESLIGADA"
-            if gpio.input(self.SFum):
-                msg["SFum"] = "LIGADA"
-            else:
-                msg["SFum"] = "DESLIGADA"
-            if gpio.input(self.SJan):
-                msg["SJan"] = "LIGADA"
-            else:
-                msg["SJan"] = "DESLIGADA"
-            if gpio.input(self.SPor):
-                msg["SPor"] = "LIGADA"
-            else:
-                msg["SPor"] = "DESLIGADA"
-            if gpio.input(self.SPres):
-                msg["SPres"] = "LIGADA"
-            else:
-                msg["SPres"] = "DESLIGADA" 
-            
-            return msg
+                msg[key] = "DESLIGADO"
+        self.dht22()
+        teste = "oi"
+        return msg, teste
         
         
     def change_state(self, sensorName):
