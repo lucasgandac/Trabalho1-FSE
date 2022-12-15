@@ -19,6 +19,13 @@ class CentralServer:
     #dados = "Não possui dados ainda"
     q = Queue()
 
+    def send_command(self, command):
+        ADDR_DIST =  ('localhost', 10102)
+        sock_dist = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock_dist.connect(ADDR_DIST)
+        msg = 'oi'
+        sock_dist.sendall(msg.encode('utf-8'))
+
     def handle_client(self, connection, adress):
         try:
             print(f'Conexão de {adress}')
@@ -70,6 +77,7 @@ class CentralServer:
             while option != '1' and option != '2' and option != '3' and option != '4' and option != '5':
                 option = input('Opção inválida. Digite uma das seguintes opções:\n1. Primeiro Andar\n2. Segundo Andar\n\n')
             if option == '1':
+                self.send_command('oi')
                 print(f'Atualizar:')
             elif option == '2':
                 print(f'Qual sensor deve ser acionado ? \n')

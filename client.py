@@ -4,6 +4,8 @@ from sensores import Sensores
 import threading
 import time
 import json 
+from socket import error as SocketError
+import errno
 
 # Create a TCP/IP socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -38,8 +40,8 @@ class DistributedServer:
                 #read_sensor.change_state("AR")
                 msg = read_sensor.read_state()
                 msg = json.dumps(msg)
-                print(msg)
-                print(msg.encode('utf-8'))
+                #print(msg)
+                #print(msg.encode('utf-8'))
 
                 sock.sendall(msg.encode('utf-8'))
                 #while amount_received < amount_expected:
@@ -51,12 +53,30 @@ class DistributedServer:
             print ( 'closing socket')
             #sock.close()
 
+    def handle_client(self, connection, adress):
+        try:
+            print(f'Conexão de {adress}')
+            while True:
+                data = connection.recv(1024)
+                #print ('received "%s"' % data)
+                if data:
+                    print(data)
+                    rec = 'Recebi'
+                    connection.sendall(rec)
+                else:
+                    print ('Sem mais conexão', adress)
+                    break
+        except SocketError as e:
+            if e.errno != errno.ECONNRESET:
+                raise
+            pass
+
     def start(self):
         print('Esperando conexão')
         self.server.listen()
         while True:
             connection, adress = self.server.accept()
-            thread = threading.Thread(target=self.send_central, args=(connection, adress))
+            thread = threading.Thread(target=self.handle_client, args=(connection, adress))
             thread.start()
             
 distr_server = DistributedServer()
