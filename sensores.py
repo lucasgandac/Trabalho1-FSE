@@ -57,19 +57,19 @@ class Sensores:
     def read_state(self):
         self.map_port()
         msg = {
-            'LUZ_1': 'DESLIGADO',
-            'LUZ_2': 'DESLIGADO',
-            'AR': 'DESLIGADO',
-            'PROJ': 'DESLIGADO',
-            'ALARME': 'DESLIGADO',
-            'SPres': 'DESLIGADO',
-            'SFum':'DESLIGADO',
-            'SJan':'DESLIGADO',
-            'SPor':'DESLIGADO'
+            "LUZ_1": "DESLIGADO",
+            "LUZ_2": "DESLIGADO",
+            "AR": "DESLIGADO",
+            "PROJ": "DESLIGADO",
+            "ALARME": "DESLIGADO",
+            "SPres": "DESLIGADO",
+            "SFum":"DESLIGADO",
+            "SJan":"DESLIGADO",
+            "SPor":"DESLIGADO"
         }
     
         for key, value in self.sensores_list.items():
-            if (key == 'COUNT_IN' or key == 'COUNT_OUT' or key == 'DHT22'):
+            if (key == "COUNT_IN" or key == "COUNT_OUT" or key == "DHT22"):
                 pass
             elif gpio.input(value):
                 msg[key] = "LIGADO"
@@ -77,16 +77,19 @@ class Sensores:
                 msg[key] = "DESLIGADO"
         dht = self.dht22()
         print(dht)
-        msg['TEMP'] = dht
+        msg["TEMP"] = dht
         return msg
         
         
     def change_state(self, sensorName):
         self.map_port()
-        print("Valor sensor:", self.sensores_list[sensorName])
-        porta = self.sensores_list[sensorName]
-        print(porta)
-        if gpio.input(porta):
-            gpio.output(porta, 0)
-        else:
-            gpio.output(porta, 1)
+        try:
+            print("Valor sensor:", self.sensores_list[sensorName])
+            porta = self.sensores_list[sensorName]
+            print(porta)         
+            if gpio.input(porta):
+                gpio.output(porta, 0)
+            else:
+                gpio.output(porta, 1)
+        except:
+            return "Não foi possível ligar"

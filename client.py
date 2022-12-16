@@ -6,6 +6,7 @@ import time
 import json 
 from socket import error as SocketError
 import errno
+import difflib
 
 # Create a TCP/IP socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -44,11 +45,14 @@ class DistributedServer:
                 #print(msg.encode('utf-8'))
 
                 sock.sendall(msg.encode('utf-8'))
+                print("\n\n\n")
+                print(msg)
+                print("\n\n\n")
                 #while amount_received < amount_expected:
                     #data = sock.recv(1024)
                     #amount_received += len(data)
                     #print ( 'received "%s"' % data)
-                time.sleep(2)
+                #time.sleep(2)
         finally:
             print ( 'closing socket')
             #sock.close()
@@ -58,11 +62,19 @@ class DistributedServer:
             print(f'Conexão de {adress}')
             while True:
                 data = connection.recv(1024)
+                data = data.decode("utf-8")
+                data = data[1:-1]
+                var = "oi"
+                controla_sensor = Sensores()
                 #print ('received "%s"' % data)
                 if data:
                     print(data)
-                    rec = 'Recebi'
-                    connection.sendall(rec)
+                    controla_sensor.change_state(data)
+                    #for i,s in enumerate(difflib.ndiff(var, data)):
+                        #print(s[0], s[-1], i)
+                    #connection.sendall(data('utf-8'))
+                    #dados = controla_sensor.read_state()
+                    #connection.sendall(dados)
                 else:
                     print ('Sem mais conexão', adress)
                     break
