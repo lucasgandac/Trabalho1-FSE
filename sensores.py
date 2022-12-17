@@ -2,8 +2,11 @@ import RPi.GPIO as gpio
 import time
 import adafruit_dht
 import board 
+from read_json import Mapping
+
 
 class Sensores:
+
     
     sensores_list = {
         "LUZ_1": 18,
@@ -20,10 +23,16 @@ class Sensores:
         "DHT22" : 4
     }
         
-    def __init__(self) -> None:
+    def __init__(self, arg) -> None:
         self.sensores_list = self.sensores_list
+        self.arg = arg
+
+
+    mapeamento = Mapping()
 
     def map_port(self):
+        map_portas, map_conexao = self.mapeamento.sendMapping(int(self.arg))
+        print(map_portas)
         gpio.setmode(gpio.BCM)
         gpio.setwarnings(False)
         gpio.setup(self.sensores_list['LUZ_1'], gpio.OUT)

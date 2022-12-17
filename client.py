@@ -7,6 +7,9 @@ import json
 from socket import error as SocketError
 import errno
 import difflib
+import argparse
+from read_json import Mapping
+
 
 # Create a TCP/IP socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -19,11 +22,19 @@ central_adress = ('localhost', 10101)
 FORMAT = 'utf-8'
 ADDR = ('localhost', 10102)
 
+parser = argparse.ArgumentParser()
+parser.add_argument('--arg', type=int, required=True, help='An integer argument for the class')
+args = parser.parse_args()
+
+#mapeamento = Mapping()
+#map_portas, map_conexao = mapeamento.sendMapping(args.arg)
+#print(map_conexao)
 
 class DistributedServer:
-    def __init__(self) -> None:
+    def __init__(self, arg) -> None:
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server.bind(ADDR) 
+        self.arg = arg
 
     def send_central(self):
         try:
@@ -37,7 +48,7 @@ class DistributedServer:
                 amount_received = 0
                 amount_expected = len(message)
 
-                read_sensor = Sensores()
+                read_sensor = Sensores(args.arg)
                 #read_sensor.change_state("AR")
                 msg = read_sensor.read_state()
                 msg = json.dumps(msg)
@@ -46,7 +57,9 @@ class DistributedServer:
 
                 sock.sendall(msg.encode('utf-8'))
                 print("\n\n\n")
-                print(msg)
+                #args = parser.parse_args()
+                print(args)
+                #print(msg)
                 print("\n\n\n")
                 #while amount_received < amount_expected:
                     #data = sock.recv(1024)
@@ -65,7 +78,7 @@ class DistributedServer:
                 data = data.decode("utf-8")
                 data = data[1:-1]
                 var = "oi"
-                controla_sensor = Sensores()
+                controla_sensor = Sensores(args.arg)
                 #print ('received "%s"' % data)
                 if data:
                     print(data)
@@ -91,7 +104,7 @@ class DistributedServer:
             thread = threading.Thread(target=self.handle_client, args=(connection, adress))
             thread.start()
             
-distr_server = DistributedServer()
+distr_server = DistributedServer(args.arg)
 thread = threading.Thread(target=distr_server.send_central, args=[])
 thread.start()
 print('[STARTING] server is starting...')
