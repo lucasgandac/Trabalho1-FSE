@@ -2,12 +2,12 @@ from datetime import datetime
 import json
 import socket
 import threading
-import time
+import datetime
 from socket import error as SocketError
 import errno
 from queue import Queue
 import ast
-
+import time
 
 FORMAT = "utf-8"
 ADDR = ("localhost", 10101)
@@ -91,6 +91,11 @@ class CentralServer:
             print("|    PROJ    |     Projetor    |   ", dados["PROJ"],"     |\n")
             print("|  Temp e Umid   |   ", dados["TEMP"],"     |\n")
         
+    def logging(self, msg, time):
+        with open('log.txt', 'a') as f:
+            cm = msg + "as " + str(time)
+            f.write(cm + '\n')
+
 
     def menu(self):
         while True:
@@ -105,6 +110,8 @@ class CentralServer:
             if option == "1":
                 #comando = input("Digite o nome do sensor que deseja ligar ou desligar \n")
                 #dados_sensor = self.send_command(comando)
+                current_time = datetime.datetime.now()
+                self.logging("Atualizou a visualizacao dos dados: ", current_time) 
                 self.formata_valores(dataReceive)
                 #print(dataReceive)
                 #dataReceive = None
@@ -112,6 +119,9 @@ class CentralServer:
             elif option == "2":
                 comando = input("Digite o nome do sensor que deseja ligar ou desligar \n")
                 dados_sensor = self.send_command(comando)
+                current_time = datetime.datetime.now()
+                msg = "Acionou o sensor " + comando + " "
+                self.logging(msg, current_time) 
                 self.formata_valores(dataReceive)
 
 central_server = CentralServer()
