@@ -35,32 +35,45 @@ class DistributedServer:
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server.bind(ADDR) 
         self.arg = arg
+        
+    numPessoas = 0
 
+    def countPeople(self, c_in, c_out):
+        if(c_in==1):
+            print("Entraro")
+            self.numPessoas = self.numPessoas + 1
+        if(c_out==1):
+            if(self.numPessoas > 0):
+                self.numPessoas = self.numPessoas - 1
+            print("Sairo")
+        return self.numPessoas
+    
     def send_central(self):
         try:
             sock.connect(central_adress)
             while True:
                 # Send data
-                message = 'This is the message.  It will be repeated.'
-                print ( 'sending "%s"' % message)
 
                 # Look for the response
                 amount_received = 0
-                amount_expected = len(message)
 
                 read_sensor = Sensores(args.arg)
                 #read_sensor.change_state("AR")
-                msg = read_sensor.read_state()
+                msg, entr, sai = read_sensor.read_state()
+                numP = self.countPeople(entr, sai)
+                print(self.numPessoas)
+                js = {
+                    "PESSOAS" : numP
+                }
                 msg = json.dumps(msg)
+                #msg.update(js)
                 #print(msg)
                 #print(msg.encode('utf-8'))
-
+               #.sendall(str.encode("\n".join([str(n), str(e)])))
                 sock.sendall(msg.encode('utf-8'))
-                print("\n\n\n")
                 #args = parser.parse_args()
-                print(args)
                 #print(msg)
-                print("\n\n\n")
+                print("\n")
                 #while amount_received < amount_expected:
                     #data = sock.recv(1024)
                     #amount_received += len(data)

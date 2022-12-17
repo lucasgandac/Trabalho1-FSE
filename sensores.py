@@ -32,12 +32,10 @@ class Sensores:
 
     def map_port(self):
         map_portas, map_conexao = self.mapeamento.sendMapping(int(self.arg))
-        print(map_portas)
         self.sensores_list = map_portas
         gpio.setmode(gpio.BCM)
         gpio.setwarnings(False)
         gpio.setup(self.sensores_list['LUZ_1'], gpio.OUT)
-        print(self.sensores_list['LUZ_1'])
         gpio.setup(self.sensores_list['LUZ_2'], gpio.OUT)
         gpio.setup(self.sensores_list['AR'], gpio.OUT)
         gpio.setup(self.sensores_list['PROJ'], gpio.OUT)
@@ -57,7 +55,7 @@ class Sensores:
         elif(self.sensores_list['DHT22'] == 18):
             dhtDevice = adafruit_dht.DHT22(board.D18, use_pulseio=False)
         try:
-            time.sleep(0.2)
+            time.sleep(0.5)
             temperature_c = dhtDevice.temperature
             humidity = dhtDevice.humidity
             data = "Temp:  {:.1f} C    Umidade: {}% ".format(temperature_c, humidity)
@@ -66,7 +64,7 @@ class Sensores:
         except Exception as error:
             dhtDevice.exit()
             print(error)
-            return "Nao foi possivel recolher temperatura e umidade"
+            return "Atualize por favor"
     
     def read_state(self):
         self.map_port()
@@ -89,10 +87,13 @@ class Sensores:
                 msg[key] = "LIGADO"
             else:
                 msg[key] = "DESLIGADO"
+        time.sleep(0.2)
+        entr = gpio.input(self.sensores_list["COUNT_IN"])
+        sai = gpio.input(self.sensores_list["COUNT_OUT"])
         dht = self.dht22()
         print(dht)
         msg["TEMP"] = dht
-        return msg
+        return msg, entr, sai
         
         
     def change_state(self, sensorName):

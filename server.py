@@ -85,8 +85,8 @@ class CentralServer:
             print("-------------------------------------------------")
             print("|   Código   |      Sensor     |     Estado    |\n")
             print("|------------|-----------------|---------------|\n")
-            print("|   LUZ_01   |      Luz 01     |   ", dados["LUZ_1"],"     |\n")
-            print("|   LUZ_02   |      Luz 02     |   ", dados["LUZ_2"],"     |\n")
+            print("|   LUZ_1   |      Luz 01     |   ", dados["LUZ_1"],"     |\n")
+            print("|   LUZ_2   |      Luz 02     |   ", dados["LUZ_2"],"     |\n")
             print("|     AR     | Ar Condicionado |   ", dados["AR"],"     |\n")
             print("|    PROJ    |     Projetor    |   ", dados["PROJ"],"     |\n")
             print("|  Temp e Umid   |   ", dados["TEMP"],"     |\n")
@@ -103,10 +103,11 @@ class CentralServer:
             #print(shared_variable)
             #self.formata_valores(self.dataReceive)
             #print(dataReceive)
-            option = input("Qual andar deseja controlar ou monitorar:\n1. Visualizar sensores\n2. Ativar ou desativar sensor\n\n")
+            option = input("Qual ação deseja efetuar:\n1. Visualizar sensores\n2. Ativar ou desativar sensor\n")
+            print("Há um delay para refletir os valores reais, especialmente temperatura\n\n")
             #self.formata_valores(self.dataReceive)
-            while option != "1" and option != "2" and option != "3" and option != "4" and option != "5":
-                option = input("Opção inválida. Digite uma das seguintes opções:\n1. Primeiro Andar\n2. Segundo Andar\n\n")
+            while option != "1" and option != "2":
+                option = input("Opção inválida.\n\n")
             if option == "1":
                 #comando = input("Digite o nome do sensor que deseja ligar ou desligar \n")
                 #dados_sensor = self.send_command(comando)
@@ -117,11 +118,12 @@ class CentralServer:
                 #dataReceive = None
                 #print("\n\n\n")
             elif option == "2":
-                comando = input("Digite o nome do sensor que deseja ligar ou desligar \n")
+                comando = input("Digite o código do sensor que deseja ligar ou desligar \n")
                 dados_sensor = self.send_command(comando)
                 current_time = datetime.datetime.now()
                 msg = "Acionou o sensor " + comando + " "
-                self.logging(msg, current_time) 
+                self.logging(msg, current_time)
+                time.sleep(1)
                 self.formata_valores(dataReceive)
 
 central_server = CentralServer()
