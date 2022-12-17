@@ -33,9 +33,11 @@ class Sensores:
     def map_port(self):
         map_portas, map_conexao = self.mapeamento.sendMapping(int(self.arg))
         print(map_portas)
+        self.sensores_list = map_portas
         gpio.setmode(gpio.BCM)
         gpio.setwarnings(False)
         gpio.setup(self.sensores_list['LUZ_1'], gpio.OUT)
+        print(self.sensores_list['LUZ_1'])
         gpio.setup(self.sensores_list['LUZ_2'], gpio.OUT)
         gpio.setup(self.sensores_list['AR'], gpio.OUT)
         gpio.setup(self.sensores_list['PROJ'], gpio.OUT)
@@ -50,7 +52,10 @@ class Sensores:
         
 
     def dht22(self):
-        dhtDevice = adafruit_dht.DHT22(board.D4, use_pulseio=False)
+        if(self.sensores_list['DHT22'] == 4):
+            dhtDevice = adafruit_dht.DHT22(board.D4, use_pulseio=False)
+        elif(self.sensores_list['DHT22'] == 18):
+            dhtDevice = adafruit_dht.DHT22(board.D18, use_pulseio=False)
         try:
             time.sleep(0.2)
             temperature_c = dhtDevice.temperature
