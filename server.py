@@ -90,6 +90,8 @@ class CentralServer:
             print("|     AR     | Ar Condicionado |   ", dados["AR"],"     |\n")
             print("|    PROJ    |     Projetor    |   ", dados["PROJ"],"     |\n")
             print("|  Temp e Umid   |   ", dados["TEMP"],"     |\n")
+            print("|  Pessoas na Sala   |   ", dados["PES"],"     |\n")
+
         
     def logging(self, msg, time):
         with open('log.txt', 'a') as f:

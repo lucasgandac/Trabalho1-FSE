@@ -65,8 +65,13 @@ class DistributedServer:
                 js = {
                     "PESSOAS" : numP
                 }
+                print(type(msg))
+                print(msg)
+                msg['PES'] = str(numP)
                 msg = json.dumps(msg)
-                #msg.update(js)
+                print(msg)
+                print(type(msg))
+                print(msg)
                 #print(msg)
                 #print(msg.encode('utf-8'))
                #.sendall(str.encode("\n".join([str(n), str(e)])))
