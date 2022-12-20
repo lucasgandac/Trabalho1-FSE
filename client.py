@@ -80,8 +80,8 @@ class DistributedServer:
                 print(id)
                 #print(type(msg))
                 #print(msg)
-                msg['ID'] = id
                 msg['PES'] = str(numP)
+                msg['ID'] = id
                 msg = json.dumps(msg)
                 print(msg)
                 #print(type(msg))
