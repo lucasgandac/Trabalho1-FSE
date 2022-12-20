@@ -15,16 +15,27 @@ from read_json import Mapping
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # Connect the socket to the port where the server is listening
-central_adress = ('localhost', 10101)
+central_adress = ("164.41.98.28", 10101)
 #print ( 'connecting to %s port %s' % central_adress)
 #sock.connect(central_adress)
 
 FORMAT = 'utf-8'
-ADDR = ('localhost', 10102)
+#ADDR = ("164.41.98.28", 10102)
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--arg', type=int, required=True, help='An integer argument for the class')
 args = parser.parse_args()
+
+mapeamento = Mapping()
+por, con = mapeamento.sendMapping(int(args.arg))
+port_central = con['PORTA_CENTRAL']
+port_distr = con['PORTA_DIST']
+ip_central = str(con['IP_CENTRAL'])
+ip_dist = str(con['IP_DIST'])
+
+
+central_adress = (ip_central, port_central)
+ADDR = (ip_dist, port_distr)
 
 #mapeamento = Mapping()
 #map_portas, map_conexao = mapeamento.sendMapping(args.arg)
@@ -33,8 +44,8 @@ args = parser.parse_args()
 class DistributedServer:
     def __init__(self, arg) -> None:
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server.bind(ADDR) 
         self.arg = arg
+        self.server.bind(ADDR) 
         
     numPessoas = 0
 
@@ -65,13 +76,16 @@ class DistributedServer:
                 js = {
                     "PESSOAS" : numP
                 }
-                print(type(msg))
-                print(msg)
+                id = ip_dist + ':' + str(port_distr)
+                print(id)
+                #print(type(msg))
+                #print(msg)
+                msg['ID'] = id
                 msg['PES'] = str(numP)
                 msg = json.dumps(msg)
                 print(msg)
-                print(type(msg))
-                print(msg)
+                #print(type(msg))
+                #print(msg)
                 #print(msg)
                 #print(msg.encode('utf-8'))
                #.sendall(str.encode("\n".join([str(n), str(e)])))

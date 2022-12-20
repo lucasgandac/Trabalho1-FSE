@@ -8,9 +8,16 @@ import errno
 from queue import Queue
 import ast
 import time
+from read_json import Mapping
 
+mapeamento = Mapping()
+por, con = mapeamento.sendMapping(1)
+port_central = con['PORTA_CENTRAL']
+ip_central = str(con['IP_CENTRAL'])
+
+print
 FORMAT = "utf-8"
-ADDR = ("localhost", 10101)
+ADDR = (ip_central, port_central)
 dados = {
     "LUZ_1": "DESLIGADO",
     "LUZ_2": "DESLIGADO",
@@ -27,7 +34,7 @@ class CentralServer:
     #q = Queue()
 
     def send_command(self, command):
-        ADDR_DIST =  ("localhost", 10102)
+        ADDR_DIST =  ("164.41.98.28", 10102)
         sock_dist = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock_dist.connect(ADDR_DIST)
         msg = command
@@ -37,25 +44,15 @@ class CentralServer:
     def handle_client(self, connection, adress):
         global dataReceive 
         try:
-            print(f"Conexão de {adress}")
+            print("Distibuído conectado")
             while True:
                     data = connection.recv(1024)
                     #print ("received "%s"" % data)
                     if data:
-                        #print ("sending data back to the client")
-                        #print(self.data)
-                        #data =data.replace("'", '"')
-                        #print(data)
+                        print(adress)
                         dataFormat = data.decode("utf-8")
                         dataFormat = dataFormat.partition("}")[0]
                         dataReceive = dataFormat + '}'
-                        #print("\n\n\n")
-                        #print(dataReceive)
-                        #print("\n\n\n")                        
-                        #print(dados)
-                        #print(dados)
-                        #print(data)
-                        #self.q.put(data.decode("utf-8")    )
                         connection.sendall(data)
                     else:
                         print ("Sem mais conexão", adress)
