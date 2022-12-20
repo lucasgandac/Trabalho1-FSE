@@ -34,8 +34,16 @@ class CentralServer:
     #dados = "Não possui dados ainda"
     #q = Queue()
 
-    def send_command(self, command):
-        ADDR_DIST =  ("164.41.98.28", 10102)
+    def send_command(self, command, sala):
+        print(sala)
+        distObj = distribuidos[int(sala)]
+        distObj = distObj['ID']
+        print(distObj)
+        splitAdress = distObj.split(':')
+        ip = splitAdress[0]
+        port = int(splitAdress[1])
+        #ADDR_DIST =  ("164.41.98.28", 10102)
+        ADDR_DIST =  (ip, port)
         sock_dist = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock_dist.connect(ADDR_DIST)
         msg = command
@@ -130,13 +138,17 @@ class CentralServer:
                 #dataReceive = None
                 #print("\n\n\n")
             elif option == "2":
-                comando = input("Digite o código do sensor que deseja ligar ou desligar \n")
-                dados_sensor = self.send_command(comando)
-                current_time = datetime.datetime.now()
-                msg = "Acionou o sensor " + comando + " "
-                self.logging(msg, current_time)
-                time.sleep(1)
-                self.formata_valores()
+                sala = input("Digite a sala que deseja controlar \n")
+                if sala.isdigit() and int(sala) < len(distribuidos):
+                    comando = input("Digite o código do sensor que deseja ligar ou desligar \n")
+                    dados_sensor = self.send_command(comando, sala)
+                    current_time = datetime.datetime.now()
+                    msg = "Acionou o sensor " + comando + " "
+                    self.logging(msg, current_time)
+                    time.sleep(1)
+                    self.formata_valores()
+                else:
+                    print("Sala invalida \n")
             elif option == '3':
                 print(len(distribuidos))
                 for x in distribuidos:
