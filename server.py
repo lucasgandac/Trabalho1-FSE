@@ -92,7 +92,7 @@ class CentralServer:
         self.server.listen()
         while True:
             connection, address = self.server.accept()
-            print('Connected to: ' + address[0] + ':' + str(address[1]))
+            #print('Conexão de: ' + address[0] + ':' + str(address[1]))
             start_new_thread(self.handle_client, (connection,address ))
             #central_server.menu()
             
@@ -138,8 +138,11 @@ class CentralServer:
                 #dataReceive = None
                 #print("\n\n\n")
             elif option == "2":
-                sala = input("Digite a sala que deseja controlar \n")
+                salaNum = len(distribuidos) - 1
+                salaNum = str(salaNum)
+                sala = input(f'Digite o número da sala que deseja controlar ( Sala 0 até Sala {salaNum}) \n')
                 if sala.isdigit() and int(sala) < len(distribuidos):
+                    print("Caso deseje ligar tudo digite LIGA, caso deseje desligar digite DESLIGA")
                     comando = input("Digite o código do sensor que deseja ligar ou desligar \n")
                     dados_sensor = self.send_command(comando, sala)
                     current_time = datetime.datetime.now()
@@ -157,5 +160,5 @@ class CentralServer:
 central_server = CentralServer()
 thread = threading.Thread(target=central_server.menu, args=[])
 thread.start()
-print("[STARTING] server is starting...")
+#print("[STARTING] server is starting...")
 central_server.start()

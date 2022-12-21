@@ -114,9 +114,12 @@ class DistributedServer:
                 #print ('received "%s"' % data)
                 if data:
                     print(data)
-                    if(data=="LUZ_1"):
-                        print("tao me deixando sonhar")
-                    controla_sensor.change_state(data)
+                    if(data=="LIGA"):
+                        controla_sensor.turnAll_On()
+                    elif(data=="DESLIGA"):
+                        controla_sensor.turnAll_Off()
+                    else:
+                        controla_sensor.change_state(data)
                     #for i,s in enumerate(difflib.ndiff(var, data)):
                         #print(s[0], s[-1], i)
                     #connection.sendall(data('utf-8'))

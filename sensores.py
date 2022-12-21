@@ -55,7 +55,7 @@ class Sensores:
         elif(self.sensores_list['DHT22'] == 18):
             dhtDevice = adafruit_dht.DHT22(board.D18, use_pulseio=False)
         try:
-            time.sleep(0.5)
+            time.sleep(2)
             temperature_c = dhtDevice.temperature
             humidity = dhtDevice.humidity
             data = "Temp:  {:.1f} C    Umidade: {}% ".format(temperature_c, humidity)
@@ -106,5 +106,25 @@ class Sensores:
                 gpio.output(porta, 0)
             else:
                 gpio.output(porta, 1)
+        except:
+            return "Não foi possível ligar"
+
+    def turnAll_On(self):
+        self.map_port()
+        try:
+            gpio.output(self.sensores_list['LUZ_1'], 1)
+            gpio.output(self.sensores_list['LUZ_2'], 1)
+            gpio.output(self.sensores_list['AR'], 1)
+            gpio.output(self.sensores_list['PROJ'], 1)
+        except:
+            return "Não foi possível ligar"
+        
+    def turnAll_Off(self):
+        self.map_port()
+        try:
+            gpio.output(self.sensores_list['LUZ_1'], 0)
+            gpio.output(self.sensores_list['LUZ_2'], 0)
+            gpio.output(self.sensores_list['AR'], 0)
+            gpio.output(self.sensores_list['PROJ'], 0)
         except:
             return "Não foi possível ligar"
