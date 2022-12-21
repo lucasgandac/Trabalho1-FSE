@@ -63,7 +63,7 @@ class Sensores:
         
         except Exception as error:
             dhtDevice.exit()
-            print(error)
+            #print(error)
             return "Atualize por favor"
     
     def read_state(self):
@@ -99,9 +99,7 @@ class Sensores:
     def change_state(self, sensorName):
         self.map_port()
         try:
-            print("Valor sensor:", self.sensores_list[sensorName])
             porta = self.sensores_list[sensorName]
-            print(porta)         
             if gpio.input(porta):
                 gpio.output(porta, 0)
             else:
