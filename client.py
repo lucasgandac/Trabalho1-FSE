@@ -37,10 +37,6 @@ ip_dist = str(con['IP_DIST'])
 central_adress = (ip_central, port_central)
 ADDR = (ip_dist, port_distr)
 
-#mapeamento = Mapping()
-#map_portas, map_conexao = mapeamento.sendMapping(args.arg)
-#print(map_conexao)
-
 class DistributedServer:
     def __init__(self, arg) -> None:
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -51,12 +47,12 @@ class DistributedServer:
 
     def countPeople(self, c_in, c_out):
         if(c_in==1):
-            print("Entraro")
+            print("Entrou alguém")
             self.numPessoas = self.numPessoas + 1
         if(c_out==1):
             if(self.numPessoas > 0):
                 self.numPessoas = self.numPessoas - 1
-            print("Sairo")
+            print("Saiu alguém")
         return self.numPessoas
     
     def send_central(self):
@@ -72,14 +68,11 @@ class DistributedServer:
                 #read_sensor.change_state("AR")
                 msg, entr, sai = read_sensor.read_state()
                 numP = self.countPeople(entr, sai)
-                print(self.numPessoas)
+                #print(self.numPessoas)
                 js = {
                     "PESSOAS" : numP
                 }
                 id = ip_dist + ':' + str(port_distr)
-                print(id)
-                #print(type(msg))
-                #print(msg)
                 msg['PES'] = str(numP)
                 msg['ID'] = id
                 msg = json.dumps(msg)
@@ -110,7 +103,6 @@ class DistributedServer:
                     else:
                         controla_sensor.change_state(data)
                 else:
-                    print ('Sem mais conexão', adress)
                     break
         except SocketError as e:
             if e.errno != errno.ECONNRESET:
@@ -124,9 +116,12 @@ class DistributedServer:
             connection, adress = self.server.accept()
             thread = threading.Thread(target=self.handle_client, args=(connection, adress))
             thread.start()
-            
-distr_server = DistributedServer(args.arg)
-thread = threading.Thread(target=distr_server.send_central, args=[])
-thread.start()
-print('[STARTING] server is starting...')
-distr_server.start()
+ 
+try:           
+    distr_server = DistributedServer(args.arg)
+    thread = threading.Thread(target=distr_server.send_central, args=[])
+    thread.start()
+    #print('[STARTING] server is starting...')
+    distr_server.start()
+except KeyboardInterrupt:
+    exit()

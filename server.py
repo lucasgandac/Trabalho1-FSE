@@ -35,10 +35,8 @@ class CentralServer:
     #q = Queue()
 
     def send_command(self, command, sala):
-        print(sala)
         distObj = distribuidos[int(sala)]
         distObj = distObj['ID']
-        print(distObj)
         splitAdress = distObj.split(':')
         ip = splitAdress[0]
         port = int(splitAdress[1])
@@ -144,15 +142,21 @@ class CentralServer:
                     print("Sala invalida \n")
             elif option == '3':
                 tudo = input("Caso deseje ligar tudo digite LIGA, caso deseje desligar digite DESLIGA: ")
-                print(len(distribuidos))
+                current_time = datetime.datetime.now()
+                msg = "Executou o comando de " + tudo + "R todos os sensores do prédio "
+                self.logging(msg, current_time)
                 salas = 1
                 numSala = 0
                 while(salas <= len(distribuidos)):
                     dados_sensor = self.send_command(tudo, salas -1)
                     salas += 1
 
-central_server = CentralServer()
-thread = threading.Thread(target=central_server.menu, args=[])
-thread.start()
-#print("[STARTING] server is starting...")
-central_server.start()
+
+try:
+    central_server = CentralServer()
+    thread = threading.Thread(target=central_server.menu, args=[])
+    thread.start()
+    #print("[STARTING] server is starting...")
+    central_server.start()
+except KeyboardInterrupt:
+    exit()
