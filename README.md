@@ -3,6 +3,8 @@
 ### Lucas Ganda Carvalho - 170039668
 Este trabalho tem por objetivo a criação de um sistema distribuído de automação predial para monitoramento e acionamento de sensores e dispositivos de um prédio com múltiplas salas. O sistema deve ser desenvolvido para funcionar em um conjunto de placas Raspberry Pi com um servidor central responsável pelo controle e interface com o usuário e servidores distribuídos para leitura e acionamento dos dispositivos. Dentre os dispositivos envolvidos estão o monitoramento de temperatura e umidade, sensores de presença, sensores de fumaça, sensores de contagem de pessoas, sensores de abertura e fechamento de portas e janelas, acionamento de lâmpadas, aparelhos de ar-condicionado, alarme e aspersores de água em caso de incêndio.
 
+
+[Link do vídeo](https://youtu.be/69qr1Nto16I)
 ### Execução
 1. 
 Para a execução dos arquivos, primeiro deve-se garantir que os arquivos de configuração do json {sala-01.json} e {sala-02.json} estão configurados de forma
@@ -21,3 +23,10 @@ $ python3 client.py --arg 1
 ```
 
 Lembrando que apesar de poder ser escalável até N distribuídos, o arquivo de read_json deve ser configurado acrescentado-se os arquivos dos demais distribuídos
+
+
+### Imagens de execução
+
+![image1](https://github.com/lucasgandac/Trabalho1-FSE/blob/master/print-fse1.png)
+![image2](https://github.com/lucasgandac/Trabalho1-FSE/blob/master/fse-print2.png)
+![image3](https://github.com/lucasgandac/Trabalho1-FSE/blob/master/print-3-fse.png)
