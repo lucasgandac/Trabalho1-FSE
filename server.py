@@ -109,6 +109,7 @@ class CentralServer:
                 print("|    PROJ    |     Projetor    |   ", sala["PROJ"],"     |\n")
                 print("|  Temp e Umid  |  ", sala["TEMP"],"  |\n")
                 print("|  Pessoas na Sala   |   ", sala["PES"],"     |\n")
+                print("Há um delay para refletir os valores reais, especialmente temperatura\n\n")
 
         
     def logging(self, msg, time):
@@ -119,31 +120,20 @@ class CentralServer:
 
     def menu(self):
         while True:
-            #shared_variable = self.q.get()
-            #print(shared_variable)
-            #self.formata_valores(self.dataReceive)
-            #print(dataReceive)
-            option = input("Qual ação deseja efetuar:\n1. Visualizar sensores\n2. Ativar ou desativar sensor\n")
-            print("Há um delay para refletir os valores reais, especialmente temperatura\n\n")
-            #self.formata_valores(self.dataReceive)
+            option = input("Qual ação deseja efetuar:\n1. Visualizar sensores\n2. Ativar ou desativar sensor\n3. Ligar ou desativar todo o prédio\n")
             while option != "1" and option != "2" and option != "3":
                 option = input("Opção inválida.\n\n")
             if option == "1":
-                #comando = input("Digite o nome do sensor que deseja ligar ou desligar \n")
-                #dados_sensor = self.send_command(comando)
                 current_time = datetime.datetime.now()
                 self.logging("Atualizou a visualizacao dos dados: ", current_time) 
                 self.formata_valores()
-                #print(dataReceive)
-                #dataReceive = None
-                #print("\n\n\n")
             elif option == "2":
                 salaNum = len(distribuidos) - 1
                 salaNum = str(salaNum)
-                sala = input(f'Digite o número da sala que deseja controlar ( Sala 0 até Sala {salaNum}) \n')
+                sala = input(f'Digite o número da sala que deseja controlar ( Sala 0 até Sala {salaNum}) : ')
                 if sala.isdigit() and int(sala) < len(distribuidos):
                     print("Caso deseje ligar tudo digite LIGA, caso deseje desligar digite DESLIGA")
-                    comando = input("Digite o código do sensor que deseja ligar ou desligar \n")
+                    comando = input("Digite o código do sensor que deseja ligar ou desligar: ")
                     dados_sensor = self.send_command(comando, sala)
                     current_time = datetime.datetime.now()
                     msg = "Acionou o sensor " + comando + " "
@@ -153,9 +143,13 @@ class CentralServer:
                 else:
                     print("Sala invalida \n")
             elif option == '3':
+                tudo = input("Caso deseje ligar tudo digite LIGA, caso deseje desligar digite DESLIGA: ")
                 print(len(distribuidos))
-                for x in distribuidos:
-                    print(x)
+                salas = 1
+                numSala = 0
+                while(salas <= len(distribuidos)):
+                    dados_sensor = self.send_command(tudo, salas -1)
+                    salas += 1
 
 central_server = CentralServer()
 thread = threading.Thread(target=central_server.menu, args=[])
