@@ -33,6 +33,8 @@ class Mapping:
             self.f = open('sala-01.json')
         elif(config==2):
             self.f = open('sala-02.json')
+        elif(config==3):
+            self.f = open('sala-03.json')
         self.data = json.load(self.f)
         return self.mapping(), self.connectData()
 

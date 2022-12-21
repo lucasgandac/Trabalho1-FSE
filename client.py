@@ -80,23 +80,12 @@ class DistributedServer:
                 print(id)
                 #print(type(msg))
                 #print(msg)
-                msg['ID'] = id
                 msg['PES'] = str(numP)
+                msg['ID'] = id
                 msg = json.dumps(msg)
                 print(msg)
-                #print(type(msg))
-                #print(msg)
-                #print(msg)
-                #print(msg.encode('utf-8'))
-               #.sendall(str.encode("\n".join([str(n), str(e)])))
                 sock.sendall(msg.encode('utf-8'))
-                #args = parser.parse_args()
-                #print(msg)
                 print("\n")
-                #while amount_received < amount_expected:
-                    #data = sock.recv(1024)
-                    #amount_received += len(data)
-                    #print ( 'received "%s"' % data)
                 #time.sleep(2)
         finally:
             print ( 'closing socket')
@@ -114,12 +103,12 @@ class DistributedServer:
                 #print ('received "%s"' % data)
                 if data:
                     print(data)
-                    controla_sensor.change_state(data)
-                    #for i,s in enumerate(difflib.ndiff(var, data)):
-                        #print(s[0], s[-1], i)
-                    #connection.sendall(data('utf-8'))
-                    #dados = controla_sensor.read_state()
-                    #connection.sendall(dados)
+                    if(data=="LIGA"):
+                        controla_sensor.turnAll_On()
+                    elif(data=="DESLIGA"):
+                        controla_sensor.turnAll_Off()
+                    else:
+                        controla_sensor.change_state(data)
                 else:
                     print ('Sem mais conexão', adress)
                     break
